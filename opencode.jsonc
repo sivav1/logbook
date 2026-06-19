@@ -1,0 +1,66 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // OpenRouter is a built-in provider in opencode — no npm/baseURL/headers needed.
+  // Auth does NOT go in this file. Set it via:
+  //   1) run `opencode`, then `/connect` -> OpenRouter -> paste key, OR
+  //   2) edit ~/.local/share/opencode/auth.json:
+  //      { "openrouter": { "type": "api", "key": "sk-or-v1-..." } }
+  "provider": {
+    "openrouter": {
+      "models": {
+        // Coding model — primary. Falls back to OpenRouter's Free Models Router
+        // (openrouter/free), which auto-picks an available free model per request.
+        // "options.models" is OpenRouter's request-level fallback array; not officially
+        // documented for opencode configs, so verify on your activity dashboard that it
+        // actually triggers. If it doesn't, just swap "model" below to "openrouter/free" manually.
+        "qwen/qwen3-coder:free": {
+          "name": "Coding Model",
+          "options": {
+            "models": ["openrouter/free"]
+          }
+        },
+
+        // Architect / planning model — same universal fallback
+        "google/gemini-2.5-flash": {
+          "name": "Architect Model",
+          "options": {
+            "models": ["openrouter/free"]
+          }
+        },
+
+        // Cheap/fast model for background tasks (titles, summaries) — same fallback
+        "meta-llama/llama-3.3-70b-instruct:free": {
+          "name": "Background Task Model",
+          "options": {
+            "models": ["openrouter/free"]
+          }
+        },
+
+        // The Free Models Router itself — also listed so it's selectable directly
+        // via /models, and so opencode recognizes it as a valid model entry.
+        "openrouter/free": {
+          "name": "Free Models Router (fallback)"
+        }
+      }
+    }
+  },
+
+  // Default model used when no agent-specific override applies
+  "model": "openrouter/qwen/qwen3-coder:free",
+
+  // Used for lightweight background tasks (e.g. auto-generating session titles)
+  "small_model": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+
+  "agent": {
+    "plan": {
+      "model": "openrouter/google/gemini-2.5-flash"
+    },
+    "explore": {
+      "model": "openrouter/google/gemini-2.5-flash"
+    },
+    "general": {
+      "model": "openrouter/qwen/qwen3-coder:free"
+    }
+  }
+}
