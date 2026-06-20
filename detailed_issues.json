@@ -1,0 +1,127 @@
+[
+  {
+    "title": "Create Supabase client",
+    "body": "Add `supabase.ts` exporting a configured Supabase client using env vars.\n\n**Acceptance**\n- Client created with `createClient`.\n- Exported for reuse.\n\n**Tests**\n- Unit test verifies client URL and anon key from env.",
+    "labels": ["auth", "backend"]
+  },
+  {
+    "title": "Implement `handle_new_user` trigger migration",
+    "body": "Create new migration in `supabase/migrations/` that adds `users` and `profiles` tables and a trigger to populate them on sign‑up.\n\n**Acceptance**\n- Tables created with appropriate columns and RLS.\n- Trigger inserts rows on `auth.users` insert.\n\n**Tests**\n- Run migration locally and verify rows exist after mock sign‑up.",
+    "labels": ["auth", "backend", "migration"]
+  },
+  {
+    "title": "Add `useAuth` hook",
+    "body": "Create `src/hooks/useAuth.ts` handling login, logout, session retrieval using `@supabase/auth-helpers-nextjs`.\n\n**Acceptance**\n- Hook returns `{ user, loading, error, login, logout }`.\n- Stores JWT in cookie.\n\n**Tests**\n- Unit test: login with mock client updates state.",
+    "labels": ["auth", "frontend"]
+  },
+  {
+    "title": "Build login UI page",
+    "body": "Create `app/(auth)/login/page.tsx` with email/password and Google sign‑in buttons using the `useAuth` hook.\n\n**Acceptance**\n- Form validates input.\n- Successful login redirects to dashboard.\n- Errors displayed.\n\n**Tests**\n- Component test renders correctly.\n- E2E login flow.",
+    "labels": ["auth", "frontend"]
+  },
+  {
+    "title": "Build registration UI page",
+    "body": "Create `app/(auth)/register/page.tsx` similar to login, calling Supabase sign‑up.\n\n**Acceptance**\n- Registers new user, triggers migration rows.\n- Redirects to login on success.\n\n**Tests**\n- E2E sign‑up flow verifies DB rows.",
+    "labels": ["auth", "frontend"]
+  },
+  {
+    "title": "Write auth unit tests",
+    "body": "Add tests for `useAuth` hook covering login, logout, error handling.\n\n**Acceptance**\n- 100% coverage of hook logic.\n\n**Tests**\n- Jest tests with mocked Supabase client.",
+    "labels": ["auth", "testing"]
+  },
+  {
+    "title": "Create Job Type CRUD API",
+    "body": "Implement `/api/jobs` GET, POST, PUT, DELETE respecting JWT. Use shared Supabase client.\n\n**Acceptance**\n- All endpoints return proper shapes per `docs/api.md`.\n- 401 on missing/invalid JWT.\n\n**Tests**\n- Integration tests for each endpoint.",
+    "labels": ["api", "backend"]
+  },
+  {
+    "title": "Create Job Type UI list",
+    "body": "Add `app/jobs/page.tsx` showing list of job types with edit/delete buttons.\n\n**Acceptance**\n- Fetches from `/api/jobs`.\n- UI updates after mutations.\n\n**Tests**\n- Component snapshot test.",
+    "labels": ["frontend"]
+  },
+  {
+    "title": "Create Job Type UI form",
+    "body": "Add `app/jobs/new/page.tsx` and edit form supporting presets and custom fields.\n\n**Acceptance**\n- Preset fields auto‑populate.\n- Validation prevents duplicate names.\n\n**Tests**\n- UI tests for field rendering.",
+    "labels": ["frontend"]
+  },
+  {
+    "title": "Job Type API tests",
+    "body": "Write integration tests for job CRUD endpoints, covering auth, validation, and DB changes.\n\n**Acceptance**\n- All cases pass.\n\n**Tests**\n- Jest + supertest.",
+    "labels": ["testing"]
+  },
+  {
+    "title": "Implement Session Start API",
+    "body": "Create `/api/sessions/start` that creates a session with `started_at` and validates single active session per user.\n\n**Acceptance**\n- Returns 201 with session data.\n- 409 if active session exists.\n\n**Tests**\n- Integration test for start and conflict.",
+    "labels": ["api", "backend"]
+  },
+  {
+    "title": "Implement Session Stop API",
+    "body": "Create `/api/sessions/{id}/stop` that sets `ended_at` and stores `data`.\n\n**Acceptance**\n- Returns updated session.\n- Validates ownership.\n\n**Tests**\n- Integration test for stop.",
+    "labels": ["api", "backend"]
+  },
+  {
+    "title": "Create `useSession` hook",
+    "body": "Hook to start, stop, and track active session state using Supabase client.\n\n**Acceptance**\n- Exposes `startSession`, `stopSession`, `activeSession`.\n\n**Tests**\n- Unit tests for state transitions.",
+    "labels": ["frontend"]
+  },
+  {
+    "title": "Build Session UI components",
+    "body": "Add start/stop buttons in dashboard, show timer, prompt for end‑of‑session fields.\n\n**Acceptance**\n- Button disabled when session active.\n- Timer updates every second.\n\n**Tests**\n- Cypress E2E flow.",
+    "labels": ["frontend"]
+  },
+  {
+    "title": "Live Session Timer logic (Zustand)",
+    "body": "Implement global timer store that calculates elapsed time from `started_at` and persists across reloads.\n\n**Acceptance**\n- Accurate HH:MM:SS display.\n- Stops on session stop.\n\n**Tests**\n- Jest timer calculation tests.",
+    "labels": ["frontend"]
+  },
+  {
+    "title": "Session History API",
+    "body": "Create `/api/sessions` with filters for job and date, returning only authenticated user's sessions.\n\n**Acceptance**\n- Supports query params.\n\n**Tests**\n- Integration tests for filtering.",
+    "labels": ["api", "backend"]
+  },
+  {
+    "title": "Session History UI dashboard",
+    "body": "Add `app/sessions/page.tsx` displaying session cards, totals per job, pagination, and edit links.\n\n**Acceptance**\n- Correct totals shown.\n\n**Tests**\n- Snapshot and Cypress tests.",
+    "labels": ["frontend"]
+  },
+  {
+    "title": "Edit Session Audit API",
+    "body": "Add `PUT /api/sessions/{id}` requiring `audit_note`, logging changes to `session_edit_audit_log`.\n\n**Acceptance**\n- 400 on missing note.\n- Log entry created.\n\n**Tests**\n- Unit test for middleware, DB verification.",
+    "labels": ["api", "backend"]
+  },
+  {
+    "title": "Edit Session UI with audit note",
+    "body": "Update session edit page to require audit note before saving.\n\n**Acceptance**\n- Note field mandatory.\n\n**Tests**\n- E2E edit flow validates note.",
+    "labels": ["frontend"]
+  },
+  {
+    "title": "Forgotten Session Reminder cron job",
+    "body": "Add Supabase `pg_cron` job and `/api/sessions/remind` endpoint to email users after threshold.\n\n**Acceptance**\n- Hourly cron triggers email after 8h, 16h.\n- `reminder_sent_at` prevents repeats.\n\n**Tests**\n- Integration test for endpoint with mocked Resend.\n- Unit test for cron query.",
+    "labels": ["backend", "cron"]
+  },
+  {
+    "title": "Per‑Job Configuration fields",
+    "body": "Extend job schema with `hourly_rate`, `tax_percentage`, `km_deduction_rate`, `custom_deductions`. Add UI controls on job edit page.\n\n**Acceptance**\n- Values saved in job `data` JSONB.\n- Validation enforced.\n\n**Tests**\n- Validation unit tests, API update test, UI persistence test.",
+    "labels": ["api", "frontend", "phase2"]
+  },
+  {
+    "title": "IRD Reporting endpoint",
+    "body": "Create `/api/reports/ird` that aggregates business kilometres and earnings per month, returns CSV. Add UI download button.\n\n**Acceptance**\n- CSV matches spec in `docs/api.md`.\n\n**Tests**\n- E2E generate report and compare fixture.",
+    "labels": ["backend", "reporting", "phase3"]
+  },
+  {
+    "title": "Generate OpenAPI spec",
+    "body": "Produce OpenAPI spec covering all endpoints, ensure JWT validation, CORS, versioning. Add mobile integration tests.\n\n**Acceptance**\n- Spec passes Swagger validation.\n\n**Tests**\n- CI step validates spec, runs mobile tests.",
+    "labels": ["documentation", "api"]
+  },
+  {
+    "title": "Configure CI pipeline",
+    "body": "Set up GitHub Actions to run ESLint, Prettier, TypeScript compile, Jest on each PR. Enforce Conventional Commits.\n\n**Acceptance**\n- CI fails on lint/type errors.\n\n**Tests**\n- Verify actions trigger on PR.",
+    "labels": ["ci", "devops"]
+  },
+  {
+    "title": "Update project documentation",
+    "body": "Refresh `README.md` with quick‑start, link to architecture, API, auth docs. Add index of tickets.\n\n**Acceptance**\n- No broken links.\n\n**Tests**\n- Run docs check script.",
+    "labels": ["documentation"]
+  }
+]
