@@ -1,3 +1,4 @@
+@AGENTS.md
 # Conventions — Multi-Job Time Tracker
 
 This file defines the coding standards for this project. All contributors and AI agents must follow these conventions. When in doubt, check here before making a decision.
