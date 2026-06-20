@@ -1,0 +1,30 @@
+name: Bulk Import Issues
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_path:
+        description: 'Path to the JSON file in this repository'
+        required: true
+        default: 'issues.json'
+        type: string
+
+jobs:
+  import-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify File Exists
+        run: |
+          if [ ! -f "${{ inputs.file_path }}" ]; then
+            echo "::error::File not found at: ${{ inputs.file_path }}"
+            exit 1
+          fi
+
+      - name: Import Issues from JSON
+        uses: dsanchezcr/issue-importer-action@v1
+        with:
+          file-path: ${{ inputs.file_path }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

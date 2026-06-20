@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Auth – Supabase Email & Google OAuth",
+    "body": "**Description**\nImplement Supabase auth flow, user registration, and the `handle_new_user` trigger that creates `users` and `profiles` rows. Add login UI in `app/(auth)/login` and registration UI in `app/(auth)/register`.\n\n**Acceptance Criteria**\n- Users can sign‑up with email/password and Google.\n- After successful signup the DB contains matching `users` and `profiles` rows.\n- JWT is returned and stored in client state.\n- Errors surface cleanly (invalid creds, duplicate email).\n\n**Test Instructions**\n- E2E test: sign‑up → verify DB rows via Supabase client mock.\n- Unit test: auth hook `useAuth` returns user object after login.\n- Lint + type‑check passes.",
+    "labels": ["MVP", "auth"]
+  },
+  {
+    "title": "Job Type CRUD API & UI",
+    "body": "**Description**\nBuild REST endpoints (`GET/POST/PUT/DELETE /api/jobs`) and UI under `app/jobs` for creating, editing, and deleting job templates. Include preset selection (Uber, Bolt, Contract, Freelance, Custom) and custom field definition UI.\n\n**Acceptance Criteria**\n- All CRUD endpoints respect Supabase JWT and return 401 when missing.\n- UI reflects saved job types instantly.\n- Validation prevents duplicate names per user.\n- Preset fields are pre‑populated, custom fields editable.\n\n**Test Instructions**\n- Integration tests: call each endpoint with valid/invalid JWT, verify status codes and DB changes.\n- UI snapshot tests for job list and form.\n- End‑to‑end flow: create job → verify in UI and DB.",
+    "labels": ["MVP", "api", "frontend"]
+  },
+  {
+    "title": "Session Start / Stop API & UI",
+    "body": "**Description**\nImplement `/api/sessions/start` (creates session with `started_at`) and `/api/sessions/:id/stop` (sets `ended_at` and `data`). UI: Start Session button (disabled if active) and Stop Session flow that prompts for end‑of‑session fields.\n\n**Acceptance Criteria**\n- Only one active session per user; start button disabled when one exists.\n- `started_at` stored correctly; `ended_at` null until stopped.\n- All required fields saved in `data` JSONB.\n\n**Test Instructions**\n- Unit test for `useSession` hook: start → state updates, stop → state resets.\n- API integration: POST start, then POST stop, verify DB rows.\n- E2E: UI start → timer runs → stop → DB entry matches.",
+    "labels": ["MVP", "api", "frontend"]
+  },
+  {
+    "title": "Live Session Timer (Zustand)",
+    "body": "**Description**\nGlobal timer that reconstructs elapsed time from `started_at` on page load, updates every second, and survives browser/tab close.\n\n**Acceptance Criteria**\n- Timer shows correct HH:MM:SS after reload.\n- Accuracy within 1 s of real time.\n- Stops when session is stopped.\n\n**Test Instructions**\n- Jest test for timer calculation logic (given a `started_at`, returns elapsed).\n- Cypress test: start session, refresh page, verify timer continues.",
+    "labels": ["MVP", "frontend"]
+  },
+  {
+    "title": "Session History & Dashboard",
+    "body": "**Description**\nCreate `/api/sessions` list endpoint with filters (job, date) and UI page `app/sessions` that displays session cards, totals per job, and edit links.\n\n**Acceptance Criteria**\n- List endpoint returns only sessions for the authenticated user.\n- UI shows correct totals and pagination.\n- Edit link navigates to edit page with pre‑filled data.\n\n**Test Instructions**\n- API test: filter by job → correct subset.\n- UI snapshot test for dashboard layout.\n- End‑to‑end: create multiple sessions, verify totals.",
+    "labels": ["MVP", "frontend", "api"]
+  },
+  {
+    "title": "Edit Audit Log",
+    "body": "**Description**\nAdd `PUT /api/sessions/:id` that updates session data **only** when a non‑empty `audit_note` is provided. Insert a row into `session_edit_audit_log` with old/new values, field name, timestamp, and note.\n\n**Acceptance Criteria**\n- Update rejects missing `audit_note` (400).\n- Log row created with correct fields.\n- UI forces note entry before allowing save.\n\n**Test Instructions**\n- Unit test for audit middleware: missing note → error.\n- DB test: after edit, log row exists with matching old/new values.\n- E2E: edit session → verify note shown in UI and log entry via API mock.",
+    "labels": ["MVP", "api", "backend"]
+  },
+  {
+    "title": "Forgotten‑Session Reminder",
+    "body": "**Description**\nSet up Supabase `pg_cron` job (hourly) that queries sessions where `ended_at IS NULL` and `started_at` exceeds `reminder_threshold_hours`. It calls `/api/sessions/remind` which sends an email via Resend and updates `reminder_sent_at`.\n\n**Acceptance Criteria**\n- Cron runs hourly, triggers email after 8 h, then follow‑up after 16 h.\n- `reminder_sent_at` prevents duplicate sends.\n- Email content includes job name and start time.\n\n**Test Instructions**\n- Integration test for `/api/sessions/remind`: mock Resend, verify email payload.\n- Unit test for cron query logic (use a test DB fixture).",
+    "labels": ["Phase2", "backend", "cron"]
+  },
+  {
+    "title": "Per‑Job Configuration (Phase 2)",
+    "body": "**Description**\nExtend job schema with optional `hourly_rate`, `tax_percentage`, `km_deduction_rate`, `custom_deductions`. UI under job edit page to set these values.\n\n**Acceptance Criteria**\n- Fields saved in job `data` JSONB.\n- Validation (numeric, positive) enforced.\n- Defaults applied when not set.\n\n**Test Instructions**\n- Unit tests for validation functions.\n- API test: update job with config → DB reflects values.\n- UI test: edit page persists changes.",
+    "labels": ["Phase2", "frontend", "api"]
+  },
+  {
+    "title": "IRD‑Compliant Reporting (Phase 3)",
+    "body": "**Description**\nCompute business kilometres (`end_odometer - start_odometer`) per session, aggregate per month, and expose a CSV export endpoint (`GET /api/reports/ird`). UI: “Download IRD Report” button.\n\n**Acceptance Criteria**\n- Report includes required columns (date, job, km, earnings, GST).\n- CSV format matches specification in `docs/api.md`.\n\n**Test Instructions**\n- End‑to‑end: generate report for known data set, compare CSV output to fixture.\n- Unit test for aggregation logic.",
+    "labels": ["Phase3", "reporting", "backend"]
+  },
+  {
+    "title": "Mobile‑Ready API Documentation",
+    "body": "**Description**\nGenerate OpenAPI spec covering all endpoints, ensure JWT validation, CORS config, and versioning. Add integration tests that simulate a mobile client (no UI).\n\n**Acceptance Criteria**\n- Spec is up‑to‑date, passes Swagger validation.\n- Mobile client test suite passes all CRUD operations.\n\n**Test Instructions**\n- Run `npm run lint:api` (or equivalent) to validate spec.\n- CI step executes mobile integration tests.",
+    "labels": ["documentation", "api"]
+  },
+  {
+    "title": "CI / Lint / Test Pipeline",
+    "body": "**Description**\nConfigure GitHub Actions to run ESLint, Prettier, TypeScript `tsc`, and Jest on every PR. Enforce Conventional Commits via commit‑lint.\n\n**Acceptance Criteria**\n- CI fails on lint or type errors.\n- All tests must pass before merge.\n\n**Test Instructions**\n- Action scripts already defined in repo; verify they trigger on PR.\n- Manual run of `npm test` passes locally.",
+    "labels": ["ci", "devops"]
+  },
+  {
+    "title": "Documentation & Handoff",
+    "body": "**Description**\nUpdate `README.md` with quick‑start, link to `docs/architecture.md`, `docs/api.md`, `docs/auth.md`. Add Confluence page (or GitHub Wiki) summarizing tickets, linking each to its issue.\n\n**Acceptance Criteria**\n- All docs build without broken links.\n- Ticket numbers appear in the documentation index.\n\n**Test Instructions**\n- Run `npm run docs:check` (if exists) to ensure links resolve.\n- Manual review of generated wiki page.",
+    "labels": ["documentation"]
+  }
+]
