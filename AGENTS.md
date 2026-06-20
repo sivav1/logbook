@@ -25,11 +25,11 @@ Before writing any code, read the relevant docs for the task:
 
 | Task type | Docs to read |
 |---|---|
-| Any task | `CONVENTIONS.md` |
+| Any task | `CLAUDE.md` |
 | Auth, login, registration, middleware | `docs/auth.md` |
 | API routes | `docs/api.md`, `docs/auth.md` |
 | Database schema or migrations | `docs/architecture.md` section 5 |
-| Frontend components or pages | `docs/architecture.md` section 4, `CONVENTIONS.md` section 3 |
+| Frontend components or pages | `docs/architecture.md` section 4, `CLAUDE.md` section 3 |
 | Testing | `docs/testing.md` |
 | New branch or PR | `docs/branching.md` |
 | Environment variables | `docs/environment.md` |
@@ -47,7 +47,7 @@ Before writing any code, read the relevant docs for the task:
 
 ## 3. Before Writing Any Code
 
-1. Read `CONVENTIONS.md` in full
+1. Read `CLAUDE.md` in full
 2. Read the relevant docs listed in section 1 above
 3. Check `lib/types.ts` — use existing types before defining new ones
 4. Check `components/ui/` — use existing shadcn components before building new ones
@@ -122,17 +122,17 @@ When starting a new session, provide this summary so the agent has full context.
 
 ### Start a new issue
 ```
-Read CONVENTIONS.md and the relevant docs in docs/ for this task.
+Read CLAUDE.md and the relevant docs in docs/ for this task.
 Implement GitHub issue #[number]: [title]
 Branch: feature/issue-[number]-[short-description]
-Follow all conventions in CONVENTIONS.md.
+Follow all conventions in CLAUDE.md.
 Write tests as defined in docs/testing.md.
 Use Conventional Commits.
 ```
 
 ### Continue an existing issue
 ```
-Read CONVENTIONS.md.
+Read CLAUDE.md.
 Continuing work on issue #[number]: [title]
 Branch: [branch name]
 Here is the handoff from the last session: [paste handoff summary]
@@ -141,7 +141,7 @@ Continue from: [next step]
 
 ### Fix a bug
 ```
-Read CONVENTIONS.md and docs/[relevant].md.
+Read CLAUDE.md and docs/[relevant].md.
 Fix the following bug on branch fix/issue-[number]-[description]:
 [describe the bug]
 Write a test that would have caught this bug before fixing it.
