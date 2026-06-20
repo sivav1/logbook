@@ -1,0 +1,19 @@
+# Next.js Base Exclusions
+.next/**
+out/**
+build/**
+dist/**
+node_modules/**
+.turbo/**
+.vercel/**
+
+# TypeScript & Tailwind Performance Overrides
+tsconfig.tsbuildinfo
+.tsbuildinfo
+**/*.d.ts.map
+**/public/styles/global.css
+**/styles/output.css
+
+# Environment Overrides
+.env
+.env*.local
