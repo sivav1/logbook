@@ -26,5 +26,6 @@ jobs:
       - name: Import Issues from JSON
         uses: dsanchezcr/issue-importer-action@v1.0.0
         with:
+          file-format: json
           file-path: ${{ inputs.file_path }}
           github-token: ${{ secrets.GH_TOKEN }}
