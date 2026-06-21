@@ -5,11 +5,13 @@ import { useAuth } from '@/hooks/useAuth'
 jest.mock('@/hooks/useAuth')
 
 const mockLogin = jest.fn()
+const mockLoginWithGoogle = jest.fn()
 ;(useAuth as jest.Mock).mockReturnValue({
   user: null,
   loading: false,
   error: null,
   login: mockLogin,
+  loginWithGoogle: mockLoginWithGoogle,
   logout: jest.fn()
 })
 
@@ -25,4 +27,10 @@ test('calls login on submit', async () => {
   fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'secret' } })
   fireEvent.click(screen.getByText('Login'))
   await waitFor(() => expect(mockLogin).toHaveBeenCalledWith('test@example.com', 'secret'))
+})
+
+test('calls loginWithGoogle on button click', async () => {
+  render(<LoginPage />)
+  fireEvent.click(screen.getByText('Sign in with Google'))
+  await waitFor(() => expect(mockLoginWithGoogle).toHaveBeenCalled())
 })

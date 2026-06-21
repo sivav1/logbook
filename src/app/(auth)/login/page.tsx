@@ -1,14 +1,18 @@
-import { useState } from 'react'
+'use client'
+
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { login, loading, error, user } = useAuth()
+  const { login, loginWithGoogle, loading, error, user } = useAuth()
   const router = useRouter()
 
-  if (user) router.push('/dashboard')
+  useEffect(() => {
+    if (user) router.push('/dashboard')
+  }, [router, user])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,6 +44,14 @@ export default function LoginPage() {
           {loading ? 'Logging in...' : 'Login'}
         </button>
         {error && <p className="text-red-500">{error.message}</p>}
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => void loginWithGoogle()}
+          className="bg-green-500 text-white p-2 rounded"
+        >
+          Sign in with Google
+        </button>
       </form>
     </div>
   )
