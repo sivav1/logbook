@@ -10,8 +10,12 @@ vi.mock('@supabase/auth-helpers-nextjs', () => ({
 
 const mockSupabase = {
   auth: {
-    getSession: vi.fn().mockResolvedValue({ data: { session: { user: { id: 'uid', email: 'test@example.com' } } } }),
+    getSession: vi.fn().mockResolvedValue({ 
+      data: { session: { user: { id: 'uid', email: 'test@example.com' } } },
+      error: null 
+    }),
     signInWithPassword: vi.fn().mockResolvedValue({ error: null }),
+    signInWithOAuth: vi.fn().mockResolvedValue({ error: null, data: {} }),
     signOut: vi.fn().mockResolvedValue({ error: null }),
     onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } }))
   }
@@ -20,13 +24,13 @@ const mockSupabase = {
 
 test('initial load sets user', async () => {
   const { result } = renderHook(() => useAuth())
-  await waitFor(() => result.current.user !== undefined)
+  await waitFor(() => expect(result.current.user).not.toBeNull())
   expect(result.current.user?.email).toBe('test@example.com')
 })
 
 test('login updates user', async () => {
   const { result } = renderHook(() => useAuth())
-  await waitFor(() => result.current.user !== undefined)
+  await waitFor(() => expect(result.current.user).not.toBeNull())
   await act(async () => {
     await result.current.login('test@example.com', 'pwd')
   })
@@ -36,7 +40,7 @@ test('login updates user', async () => {
 
 test('logout clears user', async () => {
   const { result } = renderHook(() => useAuth())
-  await waitFor(() => result.current.user !== undefined)
+  await waitFor(() => expect(result.current.user).not.toBeNull())
   await act(async () => {
     await result.current.logout()
   })
