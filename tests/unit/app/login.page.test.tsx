@@ -2,17 +2,19 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import LoginPage from '@/app/(auth)/login/page'
 import { useAuth } from '@/hooks/useAuth'
 
-jest.mock('@/hooks/useAuth')
+import { vi } from 'vitest'
 
-const mockLogin = jest.fn()
-const mockLoginWithGoogle = jest.fn()
-;(useAuth as jest.Mock).mockReturnValue({
+vi.mock('@/hooks/useAuth')
+
+const mockLogin = vi.fn()
+const mockLoginWithGoogle = vi.fn()
+;(useAuth as any).mockReturnValue({
   user: null,
   loading: false,
   error: null,
   login: mockLogin,
   loginWithGoogle: mockLoginWithGoogle,
-  logout: jest.fn()
+  logout: vi.fn()
 })
 
 test('renders login form', () => {
